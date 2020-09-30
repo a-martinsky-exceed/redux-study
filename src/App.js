@@ -1,6 +1,6 @@
 import React from 'react';
 import List from './components/List'
-import Add from './components/Add'
+import Form from './components/Form'
 import store from './store';
 import './App.css'
 
@@ -9,7 +9,7 @@ function App() {
   const state = store.getState()
   return (
     <div className="App">
-      <Add />
+      <Form />
       <List state={state}/>
     </div>
   );

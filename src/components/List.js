@@ -8,8 +8,9 @@ const mapStateToProps = (state) => {
 }
 
 const ConndectedList = ({ articles }) => (
-  articles.map(text => {
-    return <Article key={Date.now()} text={text} />
+  articles.map(article => {
+    const { id } = article;
+    return <Article key={id} article={article} />
   })
 )
 
