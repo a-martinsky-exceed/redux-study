@@ -1,8 +1,9 @@
 import action_types from '../action_types';
-const { ADD_ARTICLE, REMOVE_ARTICLE, UPDATE_ARRICLE } = action_types;
+const { SET_INITIAL, ADD_ARTICLE, REMOVE_ARTICLE, UPDATE_ARTICLE, FETCH_SUCCESS, FETCH_FAILED } = action_types;
 
 const initialState = {
-  articles: []
+  articles: [],
+  responseStatus: null
 }
 
 const rootReducer = (current_state = initialState, action) => {
@@ -12,27 +13,35 @@ const rootReducer = (current_state = initialState, action) => {
   let list = [...articles];
   let index, article;
   if (id) {
-    index = articles.findIndex(article => article.id === id);
-    article = articles.find(article => article.id === id);
+    index = list.findIndex(article => article.id === id);
+    article = list.find(article => article.id === id);
   }
   switch (action.type) {
+    case SET_INITIAL:
+      newState.articles =[...action.payload];
+      return newState;
     case ADD_ARTICLE:
       const listArticles = [...articles, action.payload]
       newState = { ...newState, articles: [...listArticles] }
       return newState;
     case REMOVE_ARTICLE:
       if (typeof index != undefined) {
-        console.log(index, list, 'remove')
         list.splice(index, 1);
         newState = { ...newState, articles: [...list] }
       }
       return newState;
-    case UPDATE_ARRICLE:
+    case UPDATE_ARTICLE:
       if (article) {
-        list[index][action.payload.updatedField] = action.payload.updatedField;
+        list[index][action.payload.updatedField.name] = action.payload.updatedField.value;
       }
       newState = { ...newState, articles: [...list] }
-      return newState;  
+      return newState;
+    case FETCH_SUCCESS:
+      newState.responseStatus = true;
+      return newState
+    case FETCH_FAILED:
+      newState.responseStatus = false;
+      return newState;
     default:
       break;
   };
