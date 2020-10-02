@@ -3,6 +3,7 @@ const action_types = {
  ADD_ARTICLE: 'article/add',
  REMOVE_ARTICLE: 'article/remove',
  UPDATE_ARTICLE: 'article/update',
+ FETCH_STARTED: 'fetch/start',
  FETCH_SUCCESS: 'fetch/success',
  FETCH_FAILED: 'fetch/failed'
 }

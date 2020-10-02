@@ -1,79 +1,101 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import { connect } from 'react-redux'
 import { removeArticle, updateArticle } from '../actions';
+import useInput from '../hooks/useInput';
 
-class ArticleComponent extends React.Component {
-  state = {
-    articleTitle: '',
-    articleBody: '',
-    titleChanged: false,
-    bodyChanged: false,
-    disableTitle: true,
-    disableBody: true
-  }
+const ArticleComponent = (props) => {
+  const { id, title, body } = props.article;
+  const { number } = props;
+  const [isEditing, setIsEditing] = useState(false);
 
-  handleInput = (event) => {
-    const { currentTarget } = event;
-    this.setState(
-      { 
-        [`article${currentTarget.name}`]: currentTarget.value,
-        [`${currentTarget.name.toLowerCase()}Changed`]: true
-      }
-    );
-  }
+  const handleKeyDown = (event, type) => {
+    const { key } = event;
+    const keys = ["Escape", "Tab"];
+    const enterKey = "Enter";
+    const allKeys = [...keys, enterKey];
 
-  invertDisable = (event) => {
-    const { currentTarget } = event;
-    this.setState(prevState => {
-      return {
-        ...prevState,
-        [`disable${currentTarget.name}`]: !prevState[`disable${currentTarget.name}`]
-      }
-    })
-  }
-
-  handleRemove = (id) => (this.props.removeArticle({id}));
-
-  update = (event, id) => {
-    const { currentTarget } = event;
-    const updatedField = {
-      name: currentTarget.name.toLowerCase(),
-      value: currentTarget.value
+    if (
+      (type === "textarea" && keys.indexOf(key) > -1) ||
+      (type !== "textarea" && allKeys.indexOf(key) > -1)
+    ) {
+      setIsEditing(false);
     }
-    this.invertDisable(event);
-    return this.props.updateArticle({id, updatedField})
+  };
+
+  const handleRemove = (id) => (props.removeArticle({id}));
+
+  const [newTitle, titleInput] = useInput({type: 'input', className: 'textwrapper', defaultValue: title, inputType: 'text'});
+  const [newBody, bodyInput] = useInput({type: 'textarea', className: 'textwrapper',  defaultValue: body});
+
+  const titleReadRef = useRef(null),
+        bodyReadRef = useRef(null);
+
+  const titleHeight = titleReadRef.current?.clientHeight,
+        bodyHeight = bodyReadRef.current?.clientHeight;
+
+  if ((newTitle !== title) || (newBody !== body)) {
+    const updates = {...props.article, title: newTitle, body: newBody}
+    props.updateArticle({id, updates});
   }
 
-  render() {
-    const { id, title, body } = this.props.article;
-    const { articleTitle, articleBody, titleChanged, bodyChanged, disableTitle, disableBody } = this.state;
+  const articleTitle = (title, isEditing, number) => {
     return (
-      <div className='article-container'>
-      <div>
-        <input 
-          type='text' 
-          name='Title' 
-          value={titleChanged ? articleTitle : title} 
-          onChange={(e)=>this.handleInput(e)} 
-          disabled={disableTitle} 
-          onBlur={(e)=>this.update(e, id)}
-        />
-        <button name='Title' onClick={(e)=>this.invertDisable(e)} > &#128394; </button>
-        <br/>
-          <input 
-            type='text' 
-            name='Body' 
-            value={bodyChanged ? articleBody : body} 
-            onChange={(e)=>this.handleInput(e)} 
-            disabled={disableBody} 
-            onBlur={(e)=>this.update(e, id)}
-          />
-          <button name='Body' onClick={(e)=>this.invertDisable(e)} >&#128394;</button>
-      </div>
-        <button onClick={(e)=>this.handleRemove(id)} >❌</button>
-    </div>
+      <>
+        {
+          isEditing ? (
+            <div
+              onBlur={() => setIsEditing(false)}
+              onKeyDown={e => handleKeyDown(e, 'input')}
+            >
+              <div className='flex-stretch' style={{height: `${titleHeight}px`}}>{titleInput}</div>
+            </div>
+          ) : (
+            <div
+              className='textwrapper'
+              onClick={() => setIsEditing(true)}
+            >
+              <div ref={titleReadRef}>{`#${number} ${title}`}</div>
+            </div>
+          )
+        }
+      </>
     )
   }
+  
+  const articleBody = (body, isEditing) => {
+    return (
+      <>
+        {
+          isEditing ? (
+            <div
+              onBlur={() => setIsEditing(false)}
+              onKeyDown={e => handleKeyDown(e, 'textarea')}
+            >
+              <div className='flex-stretch' style={{height: `${bodyHeight}px`}}>{bodyInput}</div>
+            </div>
+          ) : (
+            <div
+              className='textwrapper'
+              onClick={() => setIsEditing(true)}
+              ref={bodyReadRef}
+            >
+              <div>{body}</div>
+            </div>
+          )
+        }
+      </>
+    )
+  }
+  
+  return (
+    <section className='card'>
+      <div className='flex-card-container'>
+        <button className='removeButton' onClick={(e)=>handleRemove(id)} >❌</button>
+        {articleTitle(title, isEditing, number)}
+        {articleBody(body, isEditing)}
+      </div>
+    </section>
+  )
 }
 
 const mapDispatchToProps = ({ removeArticle, updateArticle });

@@ -1,11 +1,27 @@
 import action_types from '../action_types';
+import { fetchAll } from '../requests';
 
-const { SET_INITIAL, ADD_ARTICLE, REMOVE_ARTICLE, UPDATE_ARTICLE, FETCH_SUCCESS, FETCH_FAILED } = action_types;
-const setInitial = (payload) => ({type: SET_INITIAL, payload})
+const { ADD_ARTICLE, REMOVE_ARTICLE, UPDATE_ARTICLE, FETCH_STARTED, FETCH_SUCCESS, FETCH_FAILED } = action_types;
 const addArticle  = (payload) => ({ type: ADD_ARTICLE, payload });
 const removeArticle = (payload) => ({ type: REMOVE_ARTICLE, payload });
 const updateArticle = (payload) => ({ type: UPDATE_ARTICLE, payload });
-const fetchSuccess = (payload) => ({ type: FETCH_SUCCESS, payload });
-const fetchFailed = (payload) => ({ type: FETCH_FAILED, payload });
 
-export {setInitial, addArticle, removeArticle, updateArticle, fetchSuccess, fetchFailed};
+const fetchPosts = () => {
+  return async dispatch => {
+    dispatch(fetchStarted());
+    try {
+      const res = await fetchAll ();
+      dispatch(fetchSuccess(res.data));
+    } catch (e) {
+      dispatch(fetchFailed(e.message));
+    }
+  };
+};
+
+const fetchSuccess = data => ({type: FETCH_SUCCESS, payload: [...data]});
+
+const fetchStarted = () => ({type: FETCH_STARTED});
+
+const fetchFailed = error => ({type: FETCH_FAILED, payload: {error}});
+
+export {addArticle, removeArticle, updateArticle, fetchPosts};

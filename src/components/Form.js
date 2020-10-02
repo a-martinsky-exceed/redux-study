@@ -1,38 +1,11 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { addArticle } from "../actions/";
-
-const mapDispatchToProps = (dispatch) => ({ addArticle: article => dispatch(addArticle(article)) });
+import useInput from '../hooks/useInput';
 
 const FormComponent = (props) => {
-  const useInput = ({type, className, inputType})  => {
-    const [value, setValue] = useState('');
-    if (type === 'input') {
-      const input = 
-        <input 
-          value={value} 
-          onChange={e => setValue(e.target.value)} 
-          type={type}
-          className={className}
-        />;
-      return [value, input];
-    }
-    if (type === 'textarea') {
-      const textarea = 
-        <textarea 
-          value={value} 
-          onChange={e => setValue(e.target.value)} 
-          type={type}
-          className={className}
-        />;
-      return [value, textarea];
-    }
-    return [];
-  }
-
-  const [title, titleInput] = useInput({type: 'input', className: 'article-input',inputType: 'text'});
+  const [title, titleInput] = useInput({type: 'input', className: 'article-input', inputType: 'text'});
   const [body, bodyInput] = useInput({type: 'textarea', className: 'article-textarea'});
-
   const handleSubmit = () => {
     const id = Math.random();
     const newArticle = { id, title, body };
@@ -48,5 +21,7 @@ const FormComponent = (props) => {
   )
 };
 
+const mapDispatchToProps = (dispatch) => ({ addArticle: article => dispatch(addArticle(article)) });
 const Form = connect(null, mapDispatchToProps)(FormComponent);
+
 export default Form;
