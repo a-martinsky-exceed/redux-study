@@ -1,14 +1,12 @@
 import React from 'react';
-import List from './components/List'
-import Form from './components/Form'
+import Content from './components/Content'
 import './App.css'
 
 
 const App = () => {
   return (
     <div className="App">
-      <Form />
-      <List />
+      <Content />
     </div>
   );
 }

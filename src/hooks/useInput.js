@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
-const useInput = ({type, className, defaultValue, inputType})  => {
-  const defVal = typeof defaultValue == undefined ? defaultValue = '' : defaultValue;
+const useInput = ({type, className, defaultValue, inputType, placeholder})  => {
+  const defVal = typeof defaultValue == 'undefined' ? defaultValue = '' : defaultValue;
   const [value, setValue] = useState(defVal);
   if (type === 'input') {
     const input = 
@@ -10,6 +10,7 @@ const useInput = ({type, className, defaultValue, inputType})  => {
         onChange={e => setValue(e.target.value)} 
         type={inputType}
         className={className}
+        placeholder={placeholder}
       />;
     return [value, input];
   }
@@ -19,6 +20,7 @@ const useInput = ({type, className, defaultValue, inputType})  => {
         value={value} 
         onChange={e => setValue(e.target.value)} 
         className={className}
+        placeholder={placeholder}
       />;
     return [value, textarea];
   }

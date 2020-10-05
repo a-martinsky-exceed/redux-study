@@ -1,5 +1,4 @@
 import action_types from '../action_types';
-const { ADD_ARTICLE, REMOVE_ARTICLE, UPDATE_ARTICLE, FETCH_STARTED, FETCH_SUCCESS, FETCH_FAILED } = action_types;
 
 const initialState = {
   articles: [],
@@ -19,27 +18,27 @@ const rootReducer = (current_state = initialState, action) => {
   }
   console.log(action.type);
   switch (action.type) {
-    case FETCH_STARTED:
+    case action_types.FETCH_STARTED:
       newState.isLoading = true;
       return newState;
-    case FETCH_SUCCESS:
+    case action_types.FETCH_SUCCESS:
       newState.isLoading = false;
       newState.articles =[...action.payload];
       return newState;
-    case FETCH_FAILED:
+    case action_types.FETCH_FAILED:
       newState.isLoading = false;
       return newState;
-    case ADD_ARTICLE:
+    case action_types.ADD_ARTICLE_SUCCESS:
       const listArticles = [action.payload, ...articles]
       newState = { ...newState, articles: [...listArticles] }
       return newState;
-    case REMOVE_ARTICLE:
+    case action_types.DELETE_ARTICLE_SUCCESS:
       if (typeof index != undefined) {
         list.splice(index, 1);
         newState = { ...newState, articles: [...list] }
       }
       return newState;
-    case UPDATE_ARTICLE:
+    case action_types.UPDATE_ARTICLE_SUCCESS:
       if (article) {
         list[index] = action.payload.updates;
       }

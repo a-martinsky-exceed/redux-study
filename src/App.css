@@ -1,3 +1,58 @@
+textarea {
+  resize: vertical;
+}
+
+li button {
+  background-color: transparent;
+  outline: none;
+  border: none;
+}
+
+#root {
+  height: 100vh;
+}
+
+.App {
+  height: 100%;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.content {
+  flex: 1 0 auto;
+}
+
+.footer {
+  flex-shrink: 0;
+  align-self: center;
+  height: 1em;
+  margin-bottom: 50px;
+}
+
+.page {
+  border: 1px solid gray;
+}
+
+.pageList {
+  list-style: none;
+  display: flex;
+  margin: 0;
+  padding: 0;
+  border: 1px solid black;
+  border-radius: 5px;
+}
+
+.active {
+  height: 100%;
+  background-color: rgb(104, 99, 99);
+  border-radius: 4px;
+}
+
+.active button {
+  color: white;
+}
+
 .textwrapper {
   border: 1px solid gray;
   min-width: 300px;
@@ -40,19 +95,22 @@
   display: flex;
   flex-wrap: wrap;
   margin-left: 5vw;
+  justify-content: center;
 }
 
-.pageList {
-  list-style: none;
+.warning {
+  background-color: rgb(232, 232, 134);
+  padding: 3px;
+  border-radius: 5px;
+  width: 250px;
   display: flex;
+  flex-direction: column;
+  margin: auto;
 }
 
-.page {
-  border: 1px solid gray;
-}
-
-.App {
-  text-align: center;
+.warning button {
+  width: 30px;
+  align-self: flex-end;
 }
 
 .App-logo {
