@@ -1,27 +1,50 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import create from "../actions/addArticle";
-import useInput from '../hooks/useInput';
+import fetchLocal from '../actions/fetchLocal';
+import Input from './Input';
 
 const CreateArticleComponent = (props) => {
-  const [title, titleInput] = useInput({type: 'input', className: 'article-input', inputType: 'text', placeholder: 'type article title here'});
-  const [body, bodyInput] = useInput({type: 'textarea', className: 'article-textarea', placeholder: 'type article text here'});
+  const [title, setTitle] = useState('');
+  const [body, setBody] = useState('');
   const [Validate, setValidate] = useState(true)
+ 
   const handleSubmit = () => {
-    const id = Math.random();
     if ([title, body].every(item => item)) {
-      const newArticle = { id, title, body };
-      props.addArticle(newArticle);  
+      const newArticle = { title, body };
+      setTitle('');
+      setBody('');
+      props.create(newArticle);
     } else {
       setValidate(false);
     }
   }
 
   return (
-    <>
-      {titleInput}<br />
-      {bodyInput} <br />
+    <div className='create-article'>
+      <Input
+        type='text'
+        value={title}
+        className='article-input'
+        onChange={e=>{
+          setTitle(e.currentTarget.value)
+          setValidate(true)
+        }}
+        placeholder={'type article title here'}
+      />
+      <br />
+      <textarea
+        value={body}
+        className='article-textarea'
+        onChange={e=>{
+          setBody(e.currentTarget.value)
+          setValidate(true)
+        }}
+        placeholder={'type article body here'}
+      />
+      <br />
       <button onClick={()=>handleSubmit()}>Add</button>
+      <button onClick={()=>props.fetchLocal()}>Fetch test data to local store</button>
       {
         !Validate && 
           <>
@@ -32,11 +55,11 @@ const CreateArticleComponent = (props) => {
               </div>
           </>
       }
-    </>
+    </div>
   )
 };
 
-const mapDispatchToProps = (dispatch) => ({ addArticle: article => dispatch(create(article)) });
+const mapDispatchToProps = ({ create, fetchLocal });
 const CreateArticle = connect(null, mapDispatchToProps)(CreateArticleComponent);
 
 export default CreateArticle;

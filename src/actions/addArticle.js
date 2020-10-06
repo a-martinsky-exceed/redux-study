@@ -14,7 +14,7 @@ const create = (data) => {
   };
 };
 
-const success = data => ({type: ADD_ARTICLE_SUCCESS, payload: [...data]});
+const success = data => ({type: ADD_ARTICLE_SUCCESS, payload: {...data}});
 
 const started = () => ({type: ADD_ARTICLE_STARTED});
 

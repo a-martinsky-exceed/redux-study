@@ -2,12 +2,14 @@ import React, { useState, useRef } from 'react';
 import { connect } from 'react-redux'
 import remove from '../actions/removeArticle';
 import update from '../actions/updateArticle'
-import useInput from '../hooks/useInput';
+import Input from './Input';
 
 const ArticleComponent = (props) => {
-  const { id, title, body } = props.article;
+  const { _id, title, body } = props.article;
   const { number } = props;
   const [isEditing, setIsEditing] = useState(false);
+  const [newTitle, setnewTitle] = useState(title);
+  const [newBody, setnewBody] = useState(body);
 
   const handleKeyDown = (event, type) => {
     const { key } = event;
@@ -27,20 +29,15 @@ const ArticleComponent = (props) => {
     setIsEditing(false)
     if ((newTitle !== title) || (newBody !== body)) {
       const updates = {...props.article, title: newTitle, body: newBody}
-      props.update({id, updates});  
+      props.update(_id, updates);  
     }
   }
 
-  const handleRemove = (id) => (props.remove({id}));
+  const handleRemove = (_id) => (props.remove(_id));
 
-  const [newTitle, titleInput] = useInput({type: 'input', className: 'textwrapper', defaultValue: title, inputType: 'text'});
-  const [newBody, bodyInput] = useInput({type: 'textarea', className: 'textwrapper',  defaultValue: body});
+  const bodyReadRef = useRef(null);
 
-  const titleReadRef = useRef(null),
-        bodyReadRef = useRef(null);
-
-  const titleHeight = titleReadRef.current?.clientHeight,
-        bodyHeight = bodyReadRef.current?.clientHeight;
+  const bodyHeight = bodyReadRef.current?.clientHeight;
 
   const articleTitle = (title, isEditing, number) => {
     return (
@@ -51,14 +48,21 @@ const ArticleComponent = (props) => {
               onBlur={() => handleUpdate()}
               onKeyDown={e => handleKeyDown(e, 'input')}
             >
-              <div className='flex-stretch' style={{height: `${titleHeight}px`}}>{titleInput}</div>
+              <div className='flex-stretch'>
+                <Input
+                  type='text'
+                  value={newTitle}
+                  className='textwrapper'
+                  onChange={e=>setnewTitle(e.currentTarget.value)}
+                />
+              </div>
             </div>
           ) : (
             <div
               className='textwrapper'
               onClick={()=>setIsEditing(true)}
             >
-              <div ref={titleReadRef}>{`#${number} ${title}`}</div>
+              <>{`#${number} ${title}`}</>
             </div>
           )
         }
@@ -75,7 +79,13 @@ const ArticleComponent = (props) => {
               onBlur={() => handleUpdate()}
               onKeyDown={e => handleKeyDown(e, 'textarea')}
             >
-              <div className='flex-stretch' style={{height: `${bodyHeight}px`}}>{bodyInput}</div>
+              <div className='flex-stretch' style={{height: `${bodyHeight}px`}}>
+                <textarea
+                  value={newBody}
+                  className='textwrapper'
+                  onChange={e=>setnewBody(e.currentTarget.value)}
+                />
+              </div>
             </div>
           ) : (
             <div
@@ -94,7 +104,7 @@ const ArticleComponent = (props) => {
   return (
     <section className='card'>
       <div className='flex-card-container'>
-        <button className='removeButton' onClick={(e)=>handleRemove(id)} ><span role='img' aria-label='remove'>❌</span></button>
+        <button className='removeButton' onClick={(e)=>handleRemove(_id)} ><span role='img' aria-label='remove'>❌</span></button>
         {articleTitle(title, isEditing, number)}
         {articleBody(body, isEditing)}
       </div>

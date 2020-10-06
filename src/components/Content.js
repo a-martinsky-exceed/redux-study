@@ -28,8 +28,7 @@ const List = (props) => {
           articles.length 
             ?
             paginated[Chunk].map((article, index) => {
-              const { _id } = article;
-              return <Article key={ _id } number={index+1} article={article} />
+              return <Article key={ article._id } number={index+1} article={article} />
             })
             :
             <p>There are no articles yet.</p>
@@ -37,20 +36,21 @@ const List = (props) => {
       </div>
     </div>
 
-    <div className='footer'>
+    {paginated.length > 1 && 
+      <div className='footer'>
       <ul className='pageList'>
         {
-          paginated.length > 1 &&
-            paginated.map((_, index) => {
-              let active = ''
-              if (index === Chunk) {
-                active = 'active';
-              }
-              return <li className={active} value={index} onClick={e=>setChunk(+e.currentTarget.value)} key={index}><button>{index+1}</button></li>
-            })
+          paginated.map((_, index) => {
+            let active = ''
+            if (index === Chunk) {
+              active = 'active';
+            }
+            return <li className={active} value={index} onClick={e=>setChunk(+e.currentTarget.value)} key={index}><button>{index+1}</button></li>
+          })
         }
       </ul>
     </div>
+    }
     </>
   )
 }

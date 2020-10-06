@@ -15,7 +15,11 @@ const action_types = {
  
  FETCH_STARTED: 'fetch/start',
  FETCH_SUCCESS: 'fetch/success',
- FETCH_FAILED: 'fetch/failed'
+ FETCH_FAILED: 'fetch/failed',
+
+ FETCH_LOCAL_STARTED: 'fetch100/start',
+ FETCH_LOCAL_SUCCESS: 'fetch100/success',
+ FETCH_LOCAL_FAILED: 'fetch100/failed'
 }
 
 export default action_types;
