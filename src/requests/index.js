@@ -13,7 +13,7 @@ const updateDBArticle = async (_id, data) => (await axios.post(`${url}/articles/
 const deleteDBArticle = async (_id) => await axios.post(`${url}/articles/delete`, _id);
 
 const register = async (data) => await axios.post(`${url}/login/register`, data);
-const login = async (data) => await axios.post(`${url}/login/`, data);
+const loginUser = async (data) => await axios.post(`${url}/login/`, data);
 
 export {
   fetchAll,
@@ -22,5 +22,5 @@ export {
   updateDBArticle, 
   deleteDBArticle,
   register,
-  login
+  loginUser
 }

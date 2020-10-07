@@ -1,6 +1,9 @@
 const action_types = {
  SET_INITIAL: 'article/set',
 
+ SIGN_UP: 'signUp',
+ SIGN_IN: 'signIn',
+
  ADD_ARTICLE_STARTED: 'article/add/start',
  ADD_ARTICLE_SUCCESS: 'article/add/success',
  ADD_ARTICLE_FAILED: 'article/add/failed', 

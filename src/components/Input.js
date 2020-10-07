@@ -5,7 +5,9 @@ const Input = (props) => {
     <input 
       value={props.value} 
       onChange={props.onChange}
-      type={props.inputType}
+      type={props.type}
+      name={props.name}
+      checked={props.checked}
       className={props.className}
       placeholder={props.placeholder}
     />

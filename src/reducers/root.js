@@ -21,6 +21,9 @@ const rootReducer = (current_state = initialState, action) => {
     case action.type.includes('STARTED'):
       newState.isLoading = true;
       return newState;
+    case action_types.SIGN_UP || action_types.SIGN_UP:
+      newState.isLogging = action.payload;
+      return newState;
     case action_types.FETCH_SUCCESS:
       newState.isLoading = false;
       newState.articles =[...action.payload];
