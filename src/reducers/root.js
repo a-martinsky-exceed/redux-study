@@ -1,9 +1,16 @@
 import action_types from '../action_types';
 
+const getCookieValue = (a) => {
+  const b = document.cookie.match('(^|;)\\s*' + a + '\\s*=\\s*([^;]+)');
+  return b ? b.pop() : '';
+}
+
 const initialState = {
   articles: [],
   isLoading: true,
-  isLogging: false
+  isLogging: false,
+  username: getCookieValue('username'),
+  uuid: getCookieValue('uuid')
 }
 
 const rootReducer = (current_state = initialState, action) => {
@@ -21,8 +28,13 @@ const rootReducer = (current_state = initialState, action) => {
     case action.type.includes('STARTED'):
       newState.isLoading = true;
       return newState;
-    case action_types.SIGN_UP || action_types.SIGN_UP:
-      newState.isLogging = action.payload;
+    case (action_types.SIGN_UP || action_types.SIGN_IN):
+      console.log('here');
+      newState.isLogging = action.payload.success;
+      newState.uuid = action.payload.uuid;
+      document.cookie = `username=${action.payload.username}`
+      document.cookie = `uuid=${action.payload.uuid}`;
+      console.log(action.payload.success, 'ghgfh');
       return newState;
     case action_types.FETCH_SUCCESS:
       newState.isLoading = false;

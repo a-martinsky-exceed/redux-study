@@ -14,7 +14,7 @@ import {
 const AppComponent = (props) => {
   return (
     <div className="App">
-      <Router>
+      {/* <Router>
         <Switch>
           <Route path='/'>
             <Login isLogging={props.isLogging}/>
@@ -23,7 +23,12 @@ const AppComponent = (props) => {
             <Content />
           </Route>
         </Switch>
-      </Router>
+      </Router> */}
+      {
+        props.isLogging 
+          ? <Content />
+          : <Login />
+      }
     </div>
   );
 }

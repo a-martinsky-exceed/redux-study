@@ -1,18 +1,15 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import Input from './Input';
-import {signUp} from '../actions/login';
+import {signIn, signUp} from '../actions/login';
 
 class LoginComponent extends React.Component {
   state = {
     login: '',
     password: '',
+    repeatPassword: '',
     username: '',
     rememberMe: false
-  }
-
-  componentDidUpdate() {
-    console.log(document.cookie);
   }
 
   handleChange = e => {
@@ -21,26 +18,25 @@ class LoginComponent extends React.Component {
   }
 
   handleSend = async (option) => {
-    const {login, password, username} = this.state;
+    const {login, password, repeatPassword, username, rememberMe} = this.state;
     switch(option) {
       case 'in':
         if (login && password) {
           this.props.signIn({login, password});
-          const signResult = this.props.isLogging;
-          document.cookie = `isLogging=${signResult}`;
+          document.cookie = `uuid=${this.props.uuid}`;
         }
         break;
       case 'up':
-        if (login && password && username) {
-          this.props.signUp({login, password, username});
-          const signResult = this.props.isLogging;
-          document.cookie = `isLogging=${signResult}`;
+        if ([login, password, repeatPassword, username].every(item => item.length)) {
+          if (password === repeatPassword) {
+            this.props.signUp({login, password, username});
+          }
         }
         break;
       default:
         break;
     }
-    this.setState({login: '', password: '', username: ''});
+    this.setState({login: '', password: '', repeatPassword: '', username: '', rememberMe: ''});
   }
 
   rememberMe = () => {
@@ -48,7 +44,10 @@ class LoginComponent extends React.Component {
   }
 
   sign = (option) => {
-    const {login, password, username} = this.state;
+    const {login, password, repeatPassword, username} = this.state;
+    if (option === 'in' && this.props.uuid) {
+      this.props.signIn({username: this.props.username, uuid: this.props.uuid})
+    }
     return (
       <div className='login'>
         <span>{`Sign ${option}`}</span>
@@ -75,6 +74,13 @@ class LoginComponent extends React.Component {
           onChange={e=>this.handleChange(e)}
           placeholder={'password'}
         />
+        <Input
+          type='password'
+          value={repeatPassword}
+          name='repeatPassword'
+          onChange={e=>this.handleChange(e)}
+          placeholder={'repeat password'}
+        />
         <br />
         <div className='login-buttons'>
           <button onClick={()=>this.handleSend(option)}>Send</button>
@@ -85,13 +91,13 @@ class LoginComponent extends React.Component {
   }
 
   render() {
-    const option = this.props.isLogging ? 'in' : 'up';
+    const option = this.props.uuid ? 'in' : 'up';
     return this.sign(option);
   }
 }
 
-const mapStateToProps = state => ({isLogging: state.isLogging});
-const mapDispatchToProps = ({ signUp });
+const mapStateToProps = state => ({uuid: state.uuid, username: state.username});
+const mapDispatchToProps = ({ signIn, signUp });
 const Login = connect(mapStateToProps, mapDispatchToProps)(LoginComponent);
 
 export default Login;
